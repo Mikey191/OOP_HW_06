@@ -344,12 +344,12 @@ void Savedata(Reservoir* arr, int& size)
 		cout << "arr[0].CountRes = " << arr[0].CountRes << endl;
 		system("pause");
 
-		for (int i = 0; i < size; i++)
+		for (int i = 0; i < size + Reservoir::SizeSave; i++)
 		{
 			fout.write((char*)&arr[i], sizeof(Reservoir));
 		}
 	}
-	//size = Reservoir::SizeSave;
+	size = size + Reservoir::SizeSave;
 	fout.close();
 }
 
