@@ -25,6 +25,7 @@ private:
 	double V = 0;//объем
 	double S = 0;//площадь
 public:
+	static int SizeSave;//статическая переменная, для записи количества объектов класса, для того, чтобы знать, какое кол-во объектов мы считываем 
 	//конструктор с параметрами//конструктор с записанными параметрами
 	Reservoir(const char* name, int length, int width, int height,const char* type)
 	{
@@ -54,6 +55,7 @@ public:
 	friend void CopyReservoir(Reservoir*& arr, int& size);
 	bool ComparisonsType(const Reservoir& r); 
 };
+int Reservoir::SizeSave;
 
 void showAllRes(Reservoir* arr, int& size);//correct job
 void AddReservoir(Reservoir*& arr, int& size); //correct job
@@ -65,6 +67,8 @@ void ComparisonsS(Reservoir* arr, int& size);//сравнение по площади поверхности 
 void savedata_bin(Reservoir* arr, int& size);
 void loaddata_bin(Reservoir* arr, int& size);
 
+void Savedata(Reservoir* arr, int& size);
+void Loaddata(Reservoir*& arr, int& size);
 
 int main()
 {
@@ -93,7 +97,6 @@ int main()
 			showAllRes(arrRes, size);
 			break;
 		case 2:
-			
 			AddReservoir(arrRes, size);
 			break;
 		case 3:
@@ -106,10 +109,10 @@ int main()
 			ComparisonsS(arrRes, size);
 			break;
 		case 6:
-			//savedata_bin(arrRes, size);
+			Savedata(arrRes, size);
 			break;
 		case 7:
-			//loaddata_bin(arrRes, size);
+			Loaddata(arrRes, size);
 			break;
 		}
 	} while (k != 0);
@@ -147,6 +150,7 @@ void Reservoir::print() const
 	cout << "Type of reservoir: " << type << endl;
 	cout << "Volume of reservoir: " << V << endl;
 	cout << "Square of reservoir: " << S << endl;
+	cout << "Count objects: " << SizeSave << endl;
 }
 
 bool Reservoir::ComparisonsType(const Reservoir& r) 
@@ -175,7 +179,10 @@ void AddReservoir(Reservoir*& arr, int& size)
 		newArray[i] = arr[i];
 	}
 	newArray[size].input();
+	Reservoir::SizeSave++;
 	size++;
+	cout << "SizeSave = " << Reservoir::SizeSave << " Size = " << size << endl;
+	system("pause");
 	delete[] arr;
 	arr = newArray;
 }
@@ -318,4 +325,54 @@ void loaddata_bin(Reservoir* arr, int& size)
 	}
 	fclose(file);
 	size--;
+}
+
+void Savedata(Reservoir* arr, int& size)
+{
+	char filename[15] = "SecondFile.txt";
+	ofstream fout;
+	fout.open(filename);
+	if (!fout.is_open())
+	{
+		cout << "Error... file is not open!" << endl;
+	}
+	else
+	{
+		cout << "File is open!" << endl;
+
+		for (int i = 0; i < size; i++)
+		{
+			fout.write((char*)&arr[i], sizeof(Reservoir));
+		}
+	}
+	size = Reservoir::SizeSave;
+	fout.close();
+}
+
+void Loaddata(Reservoir*& arr, int& size)
+{
+	char filename[15] = "SecondFile.txt";
+	ifstream fin;
+	fin.open(filename);
+	if (!fin.is_open())
+	{
+		cout << "Error... file is not open!" << endl;
+		system("pause");
+	}
+	else
+	{
+		cout << "File is open!" << endl;
+		Reservoir temp;
+		fin.read((char*)&temp, sizeof(Reservoir));
+		temp.print();
+		size = temp.SizeSave;
+		cout << "SizeSave = " << temp.SizeSave << " Size = " << size << endl;
+		Reservoir* newArr = new Reservoir[size];
+		for (int i = 0; i < size; i++)
+		{
+			fin.read((char*)&newArr[i], sizeof(Reservoir));
+		}
+		arr = newArr;
+	}
+	fin.close();
 }
