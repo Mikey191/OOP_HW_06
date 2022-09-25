@@ -25,6 +25,7 @@ private:
 	double V = 0;//объем
 	double S = 0;//площадь
 public:
+	int CountRes = 0;
 	static int SizeSave;//статическая переменная, для записи количества объектов класса, для того, чтобы знать, какое кол-во объектов мы считываем 
 	//конструктор с параметрами//конструктор с записанными параметрами
 	Reservoir(const char* name, int length, int width, int height,const char* type)
@@ -339,13 +340,16 @@ void Savedata(Reservoir* arr, int& size)
 	else
 	{
 		cout << "File is open!" << endl;
+		arr[0].CountRes += Reservoir::SizeSave;
+		cout << "arr[0].CountRes = " << arr[0].CountRes << endl;
+		system("pause");
 
 		for (int i = 0; i < size; i++)
 		{
 			fout.write((char*)&arr[i], sizeof(Reservoir));
 		}
 	}
-	size = Reservoir::SizeSave;
+	//size = Reservoir::SizeSave;
 	fout.close();
 }
 
@@ -364,9 +368,9 @@ void Loaddata(Reservoir*& arr, int& size)
 		cout << "File is open!" << endl;
 		Reservoir temp;
 		fin.read((char*)&temp, sizeof(Reservoir));
-		temp.print();
-		size = temp.SizeSave;
-		cout << "SizeSave = " << temp.SizeSave << " Size = " << size << endl;
+		cout << "temp.CountRes = " << temp.CountRes << endl;
+		size = temp.CountRes;
+		//cout << "SizeSave = " << temp.SizeSave << " Size = " << size << endl;
 		Reservoir* newArr = new Reservoir[size];
 		for (int i = 0; i < size; i++)
 		{
